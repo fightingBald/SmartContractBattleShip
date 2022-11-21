@@ -38,8 +38,9 @@ contract Main {
 
   function register(address ship) external {
     require(count[msg.sender] < 2, 'Only two ships');
-    require(used[ship], 'Ship alread on the board');
+    require(!used[ship], 'Ship alread on the board');
     require(index <= game.height * game.width, 'Too much ship on board');
+    used[ship] = true;
     count[msg.sender] += 1;
     ships[index] = ship;
     owners[index] = msg.sender;
@@ -77,7 +78,12 @@ contract Main {
         game.xs[idx] = int(x);
         game.ys[idx] = int(y);
         invalid = false;
-      } else {
+      } else { 
+        /* TODO  dans placeship(), dans le else, lors du recalcul de x et y, si
+                les valeurs initiales ne conviennent pas, on peut se
+                retrouver dans une boule infinie pour certaines valeurs
+                donc il faut modifier la façon dont les nouveaux x et y
+                sont calculés*/
         uint newPlace = (x * game.width) + y + 1;
         x = newPlace % game.width;
         y = newPlace / game.width % game.height;
