@@ -91,6 +91,7 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
           })
         })
       })
+      alert("Player 2 turn, log in with your wallet address and select the positions of your ships")
     }
     const updateSize = async () => {
       const [event] = await wallet.contract.queryFilter('Size', 0)
@@ -162,7 +163,7 @@ export const App = () => {
   }
   const selectedShipPos = ( x: Number , y:Number) => {
     wallet?.contract.createShip(x,y);
-    console.log(wallet?.contract.adr_new_ship());
+    //console.log(wallet?.contract.adr_new_ship());
   }
   return (
     <div className={styles.body}>

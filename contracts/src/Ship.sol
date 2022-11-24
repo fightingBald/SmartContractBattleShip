@@ -28,9 +28,9 @@ contract MyShip is Ship{
       x= _x;
       y = _y;
    }
-  function fire() public override returns (uint x, uint y){
-     x = 1;
-     y = 1;
+  function fire() public override returns (uint target_x, uint target_y){
+     target_x = x;
+     target_y = y;
   }
   function place(uint width, uint height) public override returns (uint cord_x, uint cord_y){
     console.log("The Place function is calling by the account%s", msg.sender);
