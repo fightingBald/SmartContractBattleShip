@@ -129,15 +129,26 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   return board
 }
 
+
+
 const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
   const next = () => wallet?.contract.turn()
-  return (
+  const registerNewShip = () => {
+    wallet?.contract.register(wallet?.contract.adr_new_ship());
+  }
+  return (//need to add the fuction wallet is the object of the main contracct
     <div style={{ display: 'flex', gap: 5, padding: 5 }}>
-      <button onClick={() => {}}>Register</button>
+      <button onClick={registerNewShip}>Register</button>
       <button onClick={next}>Turn</button>
     </div>
   )
 }
+
+
+
+
+
+
 
 const CELLS = new Array(100 * 100)
 export const App = () => {
@@ -149,6 +160,10 @@ export const App = () => {
     gridTemplateRows: `repeat(${board?.length ?? 0}, 1fr)`,
     gridTemplateColumns: `repeat(${board?.[0]?.length ?? 0}, 1fr)`,
   }
+  const selectedShipPos = ( x: Number , y:Number) => {
+    wallet?.contract.createShip(x,y);
+    console.log(wallet?.contract.adr_new_ship());
+  }
   return (
     <div className={styles.body}>
       <h1>Welcome to Touché Coulé</h1>
@@ -158,7 +173,8 @@ export const App = () => {
           const y = Math.floor(index / board?.[0]?.length ?? 0)
           const background = board?.[x]?.[y] ? 'red' : undefined
           return (
-            <div key={index} className={styles.cell} style={{ background }} />
+            //<div key={index} className={styles.cell} style={{ background }} />
+            <div key={index} className={styles.cell} style={{ background }} onClick={() => selectedShipPos(x,y)} />
           )
         })}
       </div>

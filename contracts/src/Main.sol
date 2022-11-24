@@ -19,6 +19,7 @@ contract Main {
   mapping(uint => address) private ships;
   mapping(uint => address) private owners;
   mapping(address => uint) private count;
+  address public adr_new_ship;
 
   event Size(uint width, uint height);
   event Touched(uint ship, uint x, uint y);
@@ -29,11 +30,20 @@ contract Main {
     uint y
   );
 
+
+
   constructor() {
     game.width = 50;
     game.height = 50;
     index = 1;
     emit Size(game.width, game.height);
+  }
+
+   function createShip(uint _x, uint _y) external{
+    MyShip ship = new MyShip(_x,_y);
+    adr_new_ship = address(ship);
+    console.log("new ship created with address %s",adr_new_ship);
+    console.log("with the x = %s , y = %s",_x,_y);
   }
 
   function register(address ship) external {
@@ -49,6 +59,8 @@ contract Main {
     emit Registered(index, msg.sender, x, y);
     index += 1;
   }
+
+
 
   function turn() external {
     bool[] memory touched = new bool[](index);
@@ -92,3 +104,5 @@ contract Main {
     return (x, y);
   }
 }
+
+
