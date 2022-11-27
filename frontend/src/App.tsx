@@ -39,27 +39,9 @@ const useWindowSize = () => {
   }, [compute])
   return size
 }
-
-// const useWallet = () => {
-//   const [details, setDetails] = useState<ethereum.Details>()
-//   const [contract, setContract] = useState<main.Main>()
-//   useAffect(async () => {
-//     const details_ = await ethereum.connect('metamask')
-//     if (!details_) return
-//     setDetails(details_)
-//     const contract_ = await main.init(details_)
-//     if (!contract_) return
-//     setContract(contract_)
-//   }, [])
-//   return useMemo(() => {
-//     if (!details || !contract) return
-//     return { details, contract }
-//   }, [details, contract])
-// }
 const useWallet = () => {
   const [details, setDetails] = useState<ethereum.Details>()
   const [contract, setContract] = useState<main.Main>()
-  // const [ship, setShip] = useState<main.MyShip>()
   const [ship1, setShip1] = useState<main.MyShip>()
   const [ship2, setShip2] = useState<main.MyShip>()
   const [ship3, setShip3] = useState<main.MyShip>()
@@ -70,32 +52,25 @@ const useWallet = () => {
     if (!details_) return
     setDetails(details_)
     const contract_ = await main.init(details_)
-    const ship_1 = await main.shipsArray(1, details_)
-    const ship_2 = await main.shipsArray(2, details_)
-    const ship_3 = await main.shipsArray(3, details_)
-    const ship_4 = await main.shipsArray(4, details_)
+    const ship_1 = await main.ship1(details_)
+    const ship_2 = await main.ship2(details_)
+    const ship_3 = await main.ship3(details_)
+    const ship_4 = await main.ship4(details_)
 
-    // const ship_ = await main.ship(details_)
     if (!contract_) return
-    // if (!ship_) return
     if (!ship_1) return
     if (!ship_2) return
     if (!ship_3) return
     if (!ship_4) return
 
     setContract(contract_)
-    // setShip(ship_);
     setShip1(ship_1)
     setShip2(ship_2)
     setShip3(ship_3)
     setShip4(ship_4)
   }, [])
-  // return useMemo(() => {
-  //   if (!details || !contract || !ship) return
-  //   return { details, contract, ship}
-  // }, [details, contract, ship])
   return useMemo(() => {
-    if (!details || !contract || !ship1 || !ship2) return
+    if (!details || !contract || !ship1 || !ship2 || !ship3 || !ship4) return
     return { details, contract, ship1, ship2, ship3, ship4}
   }, [details, contract, ship1, ship2, ship3, ship4])
 }
@@ -176,20 +151,19 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
 const shipsArray : Array<string> = main.myShip();
 
 let i = 1;
-const Buttons = ({ wallet, num, setter}: { wallet: ReturnType<typeof useWallet>, num: number, setter : Function}) => {
-  const next = () => wallet?.contract.turn()
-  const registerNewShip = () => {
-    // wallet?.contract.register(main.myShip()[i]);
-    // i++;
-    // wallet?.contract.register(main.getShip(num))
-    if (wallet?.contract.register(main.getShip(num))){
-      setter(true);
-    };
-    // setter(true);
-    // setter(false);
-
+const Buttons = ({ wallet, num, setter, loader}: { wallet: ReturnType<typeof useWallet>, num: number, setter : Function, loader: Function}) => {
+  const next = async () => {
+    loader(true)
+    await wallet?.contract.turn().then(loader(false))
   }
-  return (//need to add the fuction wallet is the object of the main contracct
+  const registerNewShip = async () => {
+    loader(true)
+    await wallet?.contract.register(main.getShip(num))
+    .then (loader(false));
+    setter(true);
+ 
+  }
+  return (
     <div style={{ display: 'flex', gap: 5, padding: 5 }}>
       <button onClick={registerNewShip}>Register</button>
       <button onClick={next}>Turn</button>
@@ -201,8 +175,7 @@ const Buttons = ({ wallet, num, setter}: { wallet: ReturnType<typeof useWallet>,
 const CELLS = new Array(100 * 100)
 export const App = () => {
 
-  let playersCount : number = 1;
-  // const playerShips : number = 0;
+  const [playersCount, setPlayersCount] = useState(1);
   const [playerShips, setPlayerShips] = useState(0)
   const [shipRegistered, setShipRegistered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -216,62 +189,86 @@ export const App = () => {
     gridTemplateRows: `repeat(${board?.length ?? 0}, 1fr)`,
     gridTemplateColumns: `repeat(${board?.[0]?.length ?? 0}, 1fr)`,
   }
+  useEffect(() => {
+    alert('Welcome to touché coulé ! ')
+    alert('First player turn :\n Pick the place of your 2 ships\n The registration of a ship in the game board is a 3 steps process \n 1 - Click on a case to set the postion of the ship and sign the transaction\n 2 - Click on the case when you want your ship to fire and sign the transaction \n 3 - Finally click on the register button to register the contract on the main contract of the borad')
+  }, [])
+
   if (shipRegistered){
    setCpt(cpt+1);
    setShipRegistered(!shipRegistered)
   }
+
+  const onSuccessSelection = () => {
+    setPositionMode(!postionMode);
+    alert('Select fire position')
+    setIsLoading(false);
+  }
   const selectShipPos = async ( x: number , y:number) => {
     setIsLoading(true);
-    if(playerShips === 0){
-      await wallet?.ship1.setShipPostion(x,y);
+    if (playersCount ===2){
+      if(playerShips === 0){
+        await wallet?.ship3.setShipPostion(x,y).then(onSuccessSelection);
+      }
+      if(playerShips === 1){
+        await wallet?.ship4.setShipPostion(x,y).then(onSuccessSelection);
+      } 
+    } else {
+      if(playerShips === 0){
+        await wallet?.ship1.setShipPostion(x,y).then(onSuccessSelection);
+      }
+      if(playerShips === 1){
+        await wallet?.ship2.setShipPostion(x,y).then(onSuccessSelection);
+      } 
     }
-    if(playerShips === 1){
-      await wallet?.ship2.setShipPostion(x,y);
-    }  
-    // await wallet?.ship.setShipPostion(x,y);
-    // setPlayerShips(playerShips+1);
-    setPositionMode(!postionMode);
-    setIsLoading(false);
-    alert('Select fire position')
   }
 
+  const onSuccessFire = () => {
+    setPositionMode(!postionMode),
+    setPlayerShips(playerShips+1),
+    setIsLoading(false)
+  }
   const selectTargetPos = async ( x: number , y:number) => {
     setIsLoading(true);
     if (playersCount ===2){
       if(playerShips === 0){
-        await wallet?.ship3.setTargetPostion(x,y);
+        await wallet?.ship3.setTargetPostion(x,y) 
+        .then(onSuccessFire);
       }
       if(playerShips === 1){
-        await wallet?.ship4.setTargetPostion(x,y);
+        await wallet?.ship4.setTargetPostion(x,y)
+        .then(onSuccessFire);
       } 
     } else {
       if(playerShips === 0){
-        await wallet?.ship1.setTargetPostion(x,y);
+        await wallet?.ship1.setTargetPostion(x,y)
+        .then(onSuccessFire);
       }
       if(playerShips === 1){
-        await wallet?.ship2.setTargetPostion(x,y);
+        await wallet?.ship2.setTargetPostion(x,y)
+        .then(onSuccessFire);
       } 
     }
-    
-    
-    // await wallet?.ship.setTargetPostion(x,y);
-    setPositionMode(!postionMode)
-    setPlayerShips(playerShips+1)
-    setIsLoading(false);
-
   }
+  useEffect(() => {
+    if (cpt === 2 || cpt === 4){
+      alert ('Pick your second ship')
+    }
+    if ( cpt === 3){
+      setIsLoading(true)
+      setPlayerShips(0);
+      console.log('Player chips after first one : ', playerShips)
+      setPlayersCount(2);
+      console.log("Player 2 turn !\n Connect your wallet !")
+      alert("Player 2 turn !\n Connect your wallet !")
+      setIsLoading(false)
+    }
+    if ( cpt === 5){
+      alert('Click on turn button to start the party')
+    }
+  }, [cpt])
 
-  console.log(cpt)
-  if ( cpt === 3){
-    setIsLoading(true)
-    console.log('Player 2 turn')
-    setPlayerShips(0);
-    playersCount = playersCount + 1
-    alert("Player 2 turn !\n Connect your wallet !")
-    // window.location.reload()
-  }
 
-  
   return (
     <React.Fragment>  
     <div className={styles.body}>
@@ -298,7 +295,7 @@ export const App = () => {
       }
       </div>
       }
-      <Buttons wallet={wallet} num={cpt} setter={setShipRegistered}/> 
+      <Buttons wallet={wallet} num={cpt} setter={setShipRegistered} loader={setIsLoading}/> 
     </div>
     </React.Fragment>
   )

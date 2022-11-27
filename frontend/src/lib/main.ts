@@ -26,13 +26,6 @@ export const init = async (details: ethereum.Details) => {
   return contract_ as any as Main
 }
 
-export const myShip = () => {
-  const shipAddresses : Array<string> = [];
-  shipAddresses.push(contracts.MyShip1.address,contracts.MyShip2.address,contracts.MyShip3.address,contracts.MyShip4.address)
-  return shipAddresses;
-}
-
-
 export const getShip = (cpt : number) : string => {
   let s : string = ''
   switch (cpt){
@@ -111,17 +104,4 @@ export const ship4 = async (details: ethereum.Details) => {
   if (!deployed) return null
   const ship_ = signer ? contract.connect(signer) : contract
   return ship_ as any as MyShip
-}
-
-export const shipsArray = async (cpt : number, details: ethereum.Details) => {
-  switch (cpt){
-    case 1 : 
-      return await ship1(details)
-    case 2 : 
-      return await ship2(details)
-    case 3 : 
-      return await ship3(details)
-    case 4 : 
-      return await ship4(details)
-  }
 }

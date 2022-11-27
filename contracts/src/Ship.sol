@@ -9,8 +9,6 @@ abstract contract Ship {
   function place(uint width, uint height) public virtual returns (uint, uint);
 }
 
-
-
 contract MyShip is Ship{
 
   uint private x;
@@ -23,8 +21,9 @@ contract MyShip is Ship{
     y = _y;
   }
 
-  function fire() public override returns (uint target_x, uint target_y){
-    return (target_x, target_y);
+  function fire() public override returns (uint t_x, uint t_y){
+    t_x = target_x;
+    t_y = target_y;
   }
 
   function place(uint width, uint height) public override returns (uint cord_x, uint cord_y){
