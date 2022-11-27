@@ -23,7 +23,6 @@ const useAffect = (
     }
   }, dependencies)
 }
-
 const useWindowSize = () => {
   const [size, setSize] = useState({ height: 0, width: 0 })
   const compute = useCallback(() => {
@@ -74,7 +73,6 @@ const useWallet = () => {
     return { details, contract, ship1, ship2, ship3, ship4}
   }, [details, contract, ship1, ship2, ship3, ship4])
 }
-
 type Ship = {}
 const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   const [board, setBoard] = useState<(null | Ship)[][]>([])
@@ -148,9 +146,6 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   return board
 }
 
-const shipsArray : Array<string> = main.myShip();
-
-let i = 1;
 const Buttons = ({ wallet, num, setter, loader}: { wallet: ReturnType<typeof useWallet>, num: number, setter : Function, loader: Function}) => {
   const next = async () => {
     loader(true)
@@ -174,7 +169,6 @@ const Buttons = ({ wallet, num, setter, loader}: { wallet: ReturnType<typeof use
 
 const CELLS = new Array(100 * 100)
 export const App = () => {
-
   const [playersCount, setPlayersCount] = useState(1);
   const [playerShips, setPlayerShips] = useState(0)
   const [shipRegistered, setShipRegistered] = useState(false);
@@ -224,8 +218,9 @@ export const App = () => {
   }
 
   const onSuccessFire = () => {
-    setPositionMode(!postionMode),
-    setPlayerShips(playerShips+1),
+    setPositionMode(!postionMode)
+    setPlayerShips(playerShips+1)
+    alert('Click on the register button to register your ship')
     setIsLoading(false)
   }
   const selectTargetPos = async ( x: number , y:number) => {
@@ -264,6 +259,7 @@ export const App = () => {
       setIsLoading(false)
     }
     if ( cpt === 5){
+      setIsLoading(true)
       alert('Click on turn button to start the party')
     }
   }, [cpt])
