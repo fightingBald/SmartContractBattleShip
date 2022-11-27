@@ -6,6 +6,9 @@ be forced to pay for servers.
 The project can't be run on Windows. Please, use WSL.
 
 # Our implementation
+BY 
+>Huayi TANG (21101676) 
+>MOHAMED AZIZ ABDERRAHMEN (3802009)<br /><br />
 
 The game supports 2 different players. 
 - 4 ships have already been deployed to be registred on the game : 2 ships for each player.
