@@ -16,10 +16,10 @@ the second player needs to pick his wallet from the metamask extension.<br />
 
 - To register a ship there are 3 transaction to confirm : <br />
 
--- 1 -- Click on the cell where to place the ship and then confirming the transaction (ship contract)<br />
--- 2 -- Click to choose where the ship will fire and then confirming the transaction (ship contract)<br />
--- 3 -- Finally, click on the register button to register the ship on the board and eventually confirming the transaction (main contract)<br />
--- Repeat the same steps to register the second ship<br />
+>> -- 1 -- Click on the cell where to place the ship and then confirming the transaction (ship contract)<br />
+>> -- 2 -- Click to choose where the ship will fire and then confirming the transaction (ship contract)<br />
+>> -- 3 -- Finally, click on the register button to register the ship on the board and eventually confirming the transaction (main contract)<br />
+>> -- Repeat the same steps to register the second ship<br /><br />
 
 - Then player 2 turn, change the wallet and do the same steps as the first player.
 
