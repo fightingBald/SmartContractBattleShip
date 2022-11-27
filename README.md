@@ -10,15 +10,16 @@ The project can't be run on Windows. Please, use WSL.
 The game supports 2 different players. 
 - 4 ships have already been deployed to be registred on the game : 2 ships for each player.
 
-Each player has a unique metamask wallet
-For simplicity, we kept the two players on the same board and the same tab, so when the first player places his two ships, 
-the second player needs to pick his wallet from the metamask extension.
+Each player has a unique metamask wallet<br />
+For simplicity, we kept the two players on the same board and the same tab, so when the first player places his two ships,<br />
+the second player needs to pick his wallet from the metamask extension.<br />
 
-- To register a ship there are 3 transaction to confirm : 
--- 1 -- Click on the cell where to place the ship and then confirming the transaction (ship contract)
--- 2 -- Click to choose where the ship will fire and then confirming the transaction (ship contract)
--- 3 -- Finally, click on the register button to register the ship on the board and eventually confirming the transaction (main contract)
--- Repeat the same steps to register the second ship 
+- To register a ship there are 3 transaction to confirm : <br />
+
+-- 1 -- Click on the cell where to place the ship and then confirming the transaction (ship contract)<br />
+-- 2 -- Click to choose where the ship will fire and then confirming the transaction (ship contract)<br />
+-- 3 -- Finally, click on the register button to register the ship on the board and eventually confirming the transaction (main contract)<br />
+-- Repeat the same steps to register the second ship<br />
 
 - Then player 2 turn, change the wallet and do the same steps as the first player.
 
