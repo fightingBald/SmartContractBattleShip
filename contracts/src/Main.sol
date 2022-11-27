@@ -19,7 +19,6 @@ contract Main {
   mapping(uint => address) private ships;
   mapping(uint => address) private owners;
   mapping(address => uint) private count;
-  address public adr_new_ship;
 
   event Size(uint width, uint height);
   event Touched(uint ship, uint x, uint y);
@@ -30,8 +29,6 @@ contract Main {
     uint y
   );
 
-
-
   constructor() {
     game.width = 50;
     game.height = 50;
@@ -39,28 +36,19 @@ contract Main {
     emit Size(game.width, game.height);
   }
 
-   function createShip(uint _x, uint _y) external{
-    MyShip ship = new MyShip(_x,_y);
-    adr_new_ship = address(ship);
-    console.log("new ship created with address %s",adr_new_ship);
-    console.log("with the x = %s , y = %s",_x,_y);
-  }
-
   function register(address ship) external {
     require(count[msg.sender] < 2, 'Only two ships');
     require(!used[ship], 'Ship alread on the board');
     require(index <= game.height * game.width, 'Too much ship on board');
-    used[ship] = true;
     count[msg.sender] += 1;
     ships[index] = ship;
     owners[index] = msg.sender;
     (uint x, uint y) = placeShip(index);
     Ship(ships[index]).update(x, y);
     emit Registered(index, msg.sender, x, y);
+    used[ship] = true;
     index += 1;
   }
-
-
 
   function turn() external {
     bool[] memory touched = new bool[](index);
@@ -90,12 +78,7 @@ contract Main {
         game.xs[idx] = int(x);
         game.ys[idx] = int(y);
         invalid = false;
-      } else { 
-        /* TODO  dans placeship(), dans le else, lors du recalcul de x et y, si
-                les valeurs initiales ne conviennent pas, on peut se
-                retrouver dans une boule infinie pour certaines valeurs
-                donc il faut modifier la façon dont les nouveaux x et y
-                sont calculés*/
+      } else {
         uint newPlace = (x * game.width) + y + 1;
         x = newPlace % game.width;
         y = newPlace / game.width % game.height;
@@ -104,5 +87,3 @@ contract Main {
     return (x, y);
   }
 }
-
-

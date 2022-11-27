@@ -12,5 +12,8 @@
   "devDependencies": {
     "concurrently": "^7.5.0",
     "hardhat": "^2.12.2"
+  },
+  "dependencies": {
+    "react-loader-spinner": "^5.3.4"
   }
 }

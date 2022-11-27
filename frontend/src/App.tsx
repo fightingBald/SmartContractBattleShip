@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './styles.module.css'
 import * as ethereum from '@/lib/ethereum'
 import * as main from '@/lib/main'
 import { BigNumber } from 'ethers'
+import { Rings } from 'react-loader-spinner'
 
 type Canceler = () => void
 const useAffect = (
@@ -39,21 +40,64 @@ const useWindowSize = () => {
   return size
 }
 
+// const useWallet = () => {
+//   const [details, setDetails] = useState<ethereum.Details>()
+//   const [contract, setContract] = useState<main.Main>()
+//   useAffect(async () => {
+//     const details_ = await ethereum.connect('metamask')
+//     if (!details_) return
+//     setDetails(details_)
+//     const contract_ = await main.init(details_)
+//     if (!contract_) return
+//     setContract(contract_)
+//   }, [])
+//   return useMemo(() => {
+//     if (!details || !contract) return
+//     return { details, contract }
+//   }, [details, contract])
+// }
 const useWallet = () => {
   const [details, setDetails] = useState<ethereum.Details>()
   const [contract, setContract] = useState<main.Main>()
+  // const [ship, setShip] = useState<main.MyShip>()
+  const [ship1, setShip1] = useState<main.MyShip>()
+  const [ship2, setShip2] = useState<main.MyShip>()
+  const [ship3, setShip3] = useState<main.MyShip>()
+  const [ship4, setShip4] = useState<main.MyShip>()
+
   useAffect(async () => {
     const details_ = await ethereum.connect('metamask')
     if (!details_) return
     setDetails(details_)
     const contract_ = await main.init(details_)
+    const ship_1 = await main.shipsArray(1, details_)
+    const ship_2 = await main.shipsArray(2, details_)
+    const ship_3 = await main.shipsArray(3, details_)
+    const ship_4 = await main.shipsArray(4, details_)
+
+    // const ship_ = await main.ship(details_)
     if (!contract_) return
+    // if (!ship_) return
+    if (!ship_1) return
+    if (!ship_2) return
+    if (!ship_3) return
+    if (!ship_4) return
+
     setContract(contract_)
+    // setShip(ship_);
+    setShip1(ship_1)
+    setShip2(ship_2)
+    setShip3(ship_3)
+    setShip4(ship_4)
   }, [])
+  // return useMemo(() => {
+  //   if (!details || !contract || !ship) return
+  //   return { details, contract, ship}
+  // }, [details, contract, ship])
   return useMemo(() => {
-    if (!details || !contract) return
-    return { details, contract }
-  }, [details, contract])
+    if (!details || !contract || !ship1 || !ship2) return
+    return { details, contract, ship1, ship2, ship3, ship4}
+  }, [details, contract, ship1, ship2, ship3, ship4])
 }
 
 type Ship = {}
@@ -91,7 +135,6 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
           })
         })
       })
-      alert("Player 2 turn, log in with your wallet address and select the positions of your ships")
     }
     const updateSize = async () => {
       const [event] = await wallet.contract.queryFilter('Size', 0)
@@ -130,12 +173,21 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
   return board
 }
 
+const shipsArray : Array<string> = main.myShip();
 
-
-const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
+let i = 1;
+const Buttons = ({ wallet, num, setter}: { wallet: ReturnType<typeof useWallet>, num: number, setter : Function}) => {
   const next = () => wallet?.contract.turn()
   const registerNewShip = () => {
-    wallet?.contract.register(wallet?.contract.adr_new_ship());
+    // wallet?.contract.register(main.myShip()[i]);
+    // i++;
+    // wallet?.contract.register(main.getShip(num))
+    if (wallet?.contract.register(main.getShip(num))){
+      setter(true);
+    };
+    // setter(true);
+    // setter(false);
+
   }
   return (//need to add the fuction wallet is the object of the main contracct
     <div style={{ display: 'flex', gap: 5, padding: 5 }}>
@@ -146,13 +198,16 @@ const Buttons = ({ wallet }: { wallet: ReturnType<typeof useWallet> }) => {
 }
 
 
-
-
-
-
-
 const CELLS = new Array(100 * 100)
 export const App = () => {
+
+  let playersCount : number = 1;
+  // const playerShips : number = 0;
+  const [playerShips, setPlayerShips] = useState(0)
+  const [shipRegistered, setShipRegistered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cpt, setCpt] = useState(1);
+  const [postionMode, setPositionMode] = useState(true);
   const wallet = useWallet()
   const board = useBoard(wallet)
   const size = useWindowSize()
@@ -161,25 +216,90 @@ export const App = () => {
     gridTemplateRows: `repeat(${board?.length ?? 0}, 1fr)`,
     gridTemplateColumns: `repeat(${board?.[0]?.length ?? 0}, 1fr)`,
   }
-  const selectedShipPos = ( x: Number , y:Number) => {
-    wallet?.contract.createShip(x,y);
-    //console.log(wallet?.contract.adr_new_ship());
+  if (shipRegistered){
+   setCpt(cpt+1);
+   setShipRegistered(!shipRegistered)
   }
+  const selectShipPos = async ( x: number , y:number) => {
+    setIsLoading(true);
+    if(playerShips === 0){
+      await wallet?.ship1.setShipPostion(x,y);
+    }
+    if(playerShips === 1){
+      await wallet?.ship2.setShipPostion(x,y);
+    }  
+    // await wallet?.ship.setShipPostion(x,y);
+    // setPlayerShips(playerShips+1);
+    setPositionMode(!postionMode);
+    setIsLoading(false);
+    alert('Select fire position')
+  }
+
+  const selectTargetPos = async ( x: number , y:number) => {
+    setIsLoading(true);
+    if (playersCount ===2){
+      if(playerShips === 0){
+        await wallet?.ship3.setTargetPostion(x,y);
+      }
+      if(playerShips === 1){
+        await wallet?.ship4.setTargetPostion(x,y);
+      } 
+    } else {
+      if(playerShips === 0){
+        await wallet?.ship1.setTargetPostion(x,y);
+      }
+      if(playerShips === 1){
+        await wallet?.ship2.setTargetPostion(x,y);
+      } 
+    }
+    
+    
+    // await wallet?.ship.setTargetPostion(x,y);
+    setPositionMode(!postionMode)
+    setPlayerShips(playerShips+1)
+    setIsLoading(false);
+
+  }
+
+  console.log(cpt)
+  if ( cpt === 3){
+    setIsLoading(true)
+    console.log('Player 2 turn')
+    setPlayerShips(0);
+    playersCount = playersCount + 1
+    alert("Player 2 turn !\n Connect your wallet !")
+    // window.location.reload()
+  }
+
+  
   return (
+    <React.Fragment>  
     <div className={styles.body}>
       <h1>Welcome to Touché Coulé</h1>
-      <div className={styles.grid} style={st}>
+      {isLoading ? 
+        <Rings
+          height="200"
+          width="200"
+          radius="9"
+          color="red"
+          ariaLabel="loading"
+          wrapperStyle
+          wrapperClass 
+        />  : 
+        <div className={styles.grid} style={st}>
         {CELLS.fill(0).map((_, index) => {
           const x = Math.floor(index % board?.length ?? 0)
           const y = Math.floor(index / board?.[0]?.length ?? 0)
-          const background = board?.[x]?.[y] ? 'red' : undefined
+          const background = board?.[x]?.[y] ? 'red' : 'grey'
           return (
-            //<div key={index} className={styles.cell} style={{ background }} />
-            <div key={index} className={styles.cell} style={{ background }} onClick={() => selectedShipPos(x,y)} />
+            <div key={index} className={styles.cell} style={{ background }} onClick={() => postionMode ? selectShipPos(x,y) : selectTargetPos(x,y)} />
           )
-        })}
+        })
+      }
       </div>
-      <Buttons wallet={wallet} />
+      }
+      <Buttons wallet={wallet} num={cpt} setter={setShipRegistered}/> 
     </div>
+    </React.Fragment>
   )
 }

@@ -13,29 +13,33 @@ abstract contract Ship {
 
 contract MyShip is Ship{
 
-    uint public x;
-    uint public y;
+  uint private x;
+  uint private y;
+  uint private target_x;
+  uint private target_y;
 
-    constructor(uint _x, uint _y) public {
-        x = _x;
-        y = _y;
-        console.log("The Consructor is calling by the account%s", msg.sender);
-      
-    }
-   
-
-   function update(uint _x, uint _y) public override{
-      x= _x;
-      y = _y;
-   }
-  function fire() public override returns (uint target_x, uint target_y){
-     target_x = x;
-     target_y = y;
+  function update(uint _x, uint _y) public override{
+    x= _x;
+    y = _y;
   }
+
+  function fire() public override returns (uint target_x, uint target_y){
+    return (target_x, target_y);
+  }
+
   function place(uint width, uint height) public override returns (uint cord_x, uint cord_y){
-    console.log("The Place function is calling by the account%s", msg.sender);
     cord_x = x;
     cord_y = y;
+  }
+
+  function setShipPostion(uint _x, uint _y)external{
+    x = _x;
+    y = _y;
+  }
+
+  function setTargetPostion(uint _x, uint _y) external {
+    target_x = _x;
+    target_y = _y;
   }
 }
 
