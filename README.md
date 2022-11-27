@@ -5,30 +5,33 @@ in a decentralized way, on Ethereum. This will have cool side effects, like not
 be forced to pay for servers.
 The project can't be run on Windows. Please, use WSL.
 
-# Installation
+# Our implementation
 
-```bash
-# With HTTPS
-git clone https://github.com/ghivert/touche-coule.git
-# Or with SSH
-git clone git@github.com:ghivert/touche-coule.git
-```
+The game supports 2 different players. 
+- 4 ships have already been deployed to be registred on the game : 2 ships for each player.
 
-You’ll need to install dependencies. You’ll need [`HardHat`](https://hardhat.org/), [`Node.js`](https://nodejs.org/en/), [`NPM`](https://www.npmjs.com/) and [`Yarn`](https://yarnpkg.com/). You’ll need to install [`Metamask`](https://metamask.io/) as well to communicate with your blockchain.
+Each player has a unique metamask wallet
+For simplicity, we kept the two players on the same board and the same tab, so when the first player places his two ships, 
+the second player needs to pick his wallet from the metamask extension.
 
-- `HardHat` is a local blockchain development, to iterate quickly and avoiding wasting Ether during development. Fortunately, you have nothing to do to install it.
-- `Node.js` is used to build the frontend and running `truffle`, which is a utility to deploy contracts.
-- `NPM` or `Yarn` is a package manager, to install dependencies for your frontend development. Yarn is recommended.
-- `Metamask` is a in-browser utility to interact with decentralized applications.
+- To register a ship there are 3 transaction to confirm : 
+-- 1 -- Click on the cell where to place the ship and then confirming the transaction (ship contract)
+-- 2 -- Click to choose where the ship will fire and then confirming the transaction (ship contract)
+-- 3 -- Finally, click on the register button to register the ship on the board and eventually confirming the transaction (main contract)
+-- Repeat the same steps to register the second ship 
 
-# Some setup
+- Then player 2 turn, change the wallet and do the same steps as the first player.
 
-Once everything is installed, launch the project (with `yarn dev`). You should have a local blockchain running in local. Open Metamask, setup it, and add an account from the Private Keys HardHat displays.
-Now you can connect Metamask to the blockchain. To do this, add a network by clicking on `Ethereum Mainnet` and `personalized RPC`. Here, you should be able to add a network.
+- After placing the 4 ships, click turn to start the game 
 
-![Ganache Config](public/ganache-config.png)
+- If there are any ships touched by the other player, the will be reset to grey colors 
 
-Once you have done it, you’re connected to the HardHat blockchain!
+## Improvements 
+
+- Resetting the board on each palyer's turn to hide the places of the previous player ships
+- Add more player and more ships
+- Improving the user experience 
+- Improving the UI 
 
 # Installation
 

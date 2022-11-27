@@ -167,7 +167,6 @@ const Buttons = ({ wallet, num, setter, loader}: { wallet: ReturnType<typeof use
   )
 }
 
-
 const CELLS = new Array(100 * 100)
 export const App = () => {
   const [playersCount, setPlayersCount] = useState(1);
@@ -253,9 +252,7 @@ export const App = () => {
     if ( cpt === 3){
       setIsLoading(true)
       setPlayerShips(0);
-      console.log('Player chips after first one : ', playerShips)
       setPlayersCount(2);
-      console.log("Player 2 turn !\n Connect your wallet !")
       alert("Player 2 turn !\n Connect your wallet !")
       setIsLoading(false)
     }
