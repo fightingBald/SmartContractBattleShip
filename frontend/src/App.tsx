@@ -97,6 +97,7 @@ const useBoard = (wallet: ReturnType<typeof useWallet>) => {
     }
     const onTouched = (id: BigNumber, x_: BigNumber, y_: BigNumber) => {
       console.log('onTouched')
+      alert('Touched')
       const x = x_.toNumber()
       const y = y_.toNumber()
       setBoard(board => {
@@ -195,7 +196,7 @@ export const App = () => {
 
   const onSuccessSelection = () => {
     setPositionMode(!postionMode);
-    alert('Select fire position')
+    alert('Select target position to fire')
     setIsLoading(false);
   }
   const selectShipPos = async ( x: number , y:number) => {
@@ -259,7 +260,6 @@ export const App = () => {
       setIsLoading(false)
     }
     if ( cpt === 5){
-      setIsLoading(true)
       alert('Click on turn button to start the party')
     }
   }, [cpt])
