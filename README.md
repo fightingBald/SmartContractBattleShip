@@ -6,8 +6,9 @@ be forced to pay for servers.
 The project can't be run on Windows. Please, use WSL.
 
 # Our implementation
+## M2 RES INSTA
 BY 
->Huayi TANG (21101676) 
+>Huayi TANG (21101676)<br />
 >MOHAMED AZIZ ABDERRAHMEN (3802009)<br /><br />
 
 The game supports 2 different players. 
